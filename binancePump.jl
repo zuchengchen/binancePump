@@ -8,7 +8,7 @@ using Dates
 const SHOW_ONLY_PAIR = "USDT"
 const SHOW_LIMIT = 1
 const MIN_PERC = 0.05
-const BINANCE_WS_URL = "wss://stream.binance.com:9443/ws/!ticker@arr"
+const BINANCE_WS_URL = "wss://fstream.binance.com/ws/!ticker@arr"
 
 struct PriceChange
     symbol::String
