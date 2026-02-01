@@ -1,2 +1,13 @@
 __pycache__/
 .vs/
+
+# Julia
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+deps/deps.jl
+Manifest.toml
+
+# Configuration files (API keys and secrets)
+api_config.json
+telegram_config.json
