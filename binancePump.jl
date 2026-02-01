@@ -17,7 +17,6 @@ struct PriceChange
     total_trades::Int
     open_price::Float64
     volume::Float64
-    is_printed::Bool
     event_time::DateTime
     prev_volume::Float64
 end
@@ -32,7 +31,6 @@ mutable struct PriceGroup
     last_event_time::DateTime
     open_price::Float64
     volume::Float64
-    is_printed::Bool
 end
 
 function volume_change(pc::PriceChange)::Float64
@@ -58,8 +56,6 @@ function price_change_perc(pc::PriceChange)::Float64
 end
 
 function to_string(pg::PriceGroup, is_colored::Bool)::String
-    pg.is_printed = true
-    
     base = "Symbol:$(pg.symbol)\tTime:$(pg.last_event_time)\t" *
            "Ticks:$(pg.tick_count)\tRPCh:$(round(pg.relative_price_change, digits=2))\t" *
            "TPCh:$(round(pg.total_price_change, digits=2))\t" *
@@ -125,7 +121,6 @@ function process_message(tickers::Vector{Dict{String, Any}})
                 total_trades,
                 pc.open_price,
                 volume,
-                false,
                 event_time,
                 pc.volume
             )
@@ -138,7 +133,6 @@ function process_message(tickers::Vector{Dict{String, Any}})
                 total_trades,
                 open_price,
                 volume,
-                false,
                 event_time,
                 volume
             )
@@ -160,8 +154,7 @@ function process_message(tickers::Vector{Dict{String, Any}})
                     pc.price,
                     pc.event_time,
                     pc.open_price,
-                    pc.volume,
-                    false
+                    pc.volume
                 )
             else
                 pg = price_groups[pc.symbol]
@@ -169,7 +162,6 @@ function process_message(tickers::Vector{Dict{String, Any}})
                 pg.last_event_time = pc.event_time
                 pg.volume = pc.volume
                 pg.last_price = pc.price
-                pg.is_printed = false
                 pg.total_price_change += abs(price_change_perc(pc))
                 pg.relative_price_change += price_change_perc(pc)
                 pg.total_volume_change += volume_change_perc(pc)
@@ -198,9 +190,7 @@ function print_rankings()
             break
         end
         pg = price_groups[s]
-        if !pg.is_printed
-            println(to_string(pg, true))
-        end
+        println(to_string(pg, true))
     end
     
     println("\nTop Total Price Change")
@@ -210,9 +200,7 @@ function print_rankings()
             break
         end
         pg = price_groups[s]
-        if !pg.is_printed
-            println(to_string(pg, true))
-        end
+        println(to_string(pg, true))
     end
     
     println("\nTop Relative Price Change")
@@ -222,9 +210,7 @@ function print_rankings()
             break
         end
         pg = price_groups[s]
-        if !pg.is_printed
-            println(to_string(pg, true))
-        end
+        println(to_string(pg, true))
     end
     
     println("\nTop Total Volume Change")
@@ -234,9 +220,7 @@ function print_rankings()
             break
         end
         pg = price_groups[s]
-        if !pg.is_printed
-            println(to_string(pg, true))
-        end
+        println(to_string(pg, true))
     end
     
     println()
