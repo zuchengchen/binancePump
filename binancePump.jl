@@ -143,7 +143,7 @@ function process_message(tickers::Vector{Dict{String, Any}})
     sort!(price_changes, by=pc -> price_change_perc(pc), rev=true)
     
     for pc in price_changes
-        if !pc.is_printed && abs(price_change_perc(pc)) > MIN_PERC && volume_change_perc(pc) > MIN_PERC
+        if abs(price_change_perc(pc)) > MIN_PERC && volume_change_perc(pc) > MIN_PERC
             if !haskey(price_groups, pc.symbol)
                 price_groups[pc.symbol] = PriceGroup(
                     pc.symbol,
